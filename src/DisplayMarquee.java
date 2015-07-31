@@ -2,7 +2,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.geometry.NodeOrientation;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -21,35 +21,52 @@ public class DisplayMarquee extends Application {
         launch(args);
     }
 
+    /***
+     * Entry point for JavaFX application
+     *
+     * @param stage primary stage on which the scene will be set
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
 
+        Rectangle2D stageBounds = Screen.getPrimary().getVisualBounds();
         // Characteristics
-        final double width  = Screen.getPrimary().getBounds().getMaxX();
-        final double height = Screen.getPrimary().getBounds().getMaxY() * .08;
-        final double size   = height - (height * .15);
-        final String family = "Thaoma";
+        final double marqueeWidth = stageBounds.getMaxX();
+        final double marqueeHeight = stageBounds.getMaxY() * .08;
+        final double ocapacity = 0.65;
+        final double fontSize = marqueeHeight - (marqueeHeight * .15);
+        final String fontFamily = "Thaoma";
 
+        // Set up TextFlow with given font family and size
         TextFlow textFlow = new TextFlow();
-        Font font = new Font(family, size);
+        Font font = new Font(fontFamily, fontSize);
 
-        Text text1 = new Text("원숭이도 나무에서 떨어진다 (Even monkeys fall from trees.)     " +
+        // Set up marquee text
+        // TODO: Somehow make dynamically update it with other text
+        Text marquee_text = new Text("원숭이도 나무에서 떨어진다 (Even monkeys fall from trees.)     " +
                 "The devil hides himself in details.     "  +
                 "Hey! Que pasa :)");
 
-        text1.setFill(Color.DARKBLUE);
-        text1.setFont(font);
-        textFlow.getChildren().addAll(text1);
-        textFlow.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        marquee_text.setFill(Color.YELLOW);
+        marquee_text.setFont(font);
+        textFlow.getChildren().addAll(marquee_text);
+        //textFlow.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+        //textFlow.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 
         Group group = new Group(textFlow);
-        Scene scene = new Scene(group, width, height, Color.LIGHTGRAY);
+
+        Scene scene = new Scene(group, marqueeWidth, marqueeHeight, Color.GREY);
         scene.setCursor(Cursor.NONE);
 
-        // Set stage as a windows without borders nor buttons
+        // Set stage as a windows without borders nor buttons;
         stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setOpacity(ocapacity);
+        stage.setFullScreen(false);
 
-        //stage.alwaysOnTopProperty();
+        stage.setX(stageBounds.getMinX() + stageBounds.getWidth() - marqueeWidth);
+        stage.setY(stageBounds.getMinY() + stageBounds.getHeight() - marqueeHeight);
+
         stage.setScene(scene);
         stage.show();
 
