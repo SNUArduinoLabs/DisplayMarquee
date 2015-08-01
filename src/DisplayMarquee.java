@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.util.List;
+
 public class DisplayMarquee extends Application {
 
     public static void main(String[] args){
@@ -44,9 +46,15 @@ public class DisplayMarquee extends Application {
 
         // Set up marquee text
         // TODO: Somehow make dynamically update it with other text
-        Text marquee_text = new Text("원숭이도 나무에서 떨어진다 (Even monkeys fall from trees.)     " +
-                "The devil hides himself in details.     "  +
-                "Hey! Que pasa :)");
+        List list_parameters = getParameters().getUnnamed();
+        StringBuilder strbld = new StringBuilder();
+        for (Object list_parameter : list_parameters) {
+            strbld.append(list_parameter);
+            strbld.append(new String(new char[20]).replace('\0', ' '));
+        }
+
+        String parameters = strbld.toString();
+        Text marquee_text = new Text(parameters);
 
         marquee_text.setFill(Color.YELLOW);
         marquee_text.setFont(font);
@@ -79,7 +87,7 @@ public class DisplayMarquee extends Application {
         KeyFrame initkf = new KeyFrame(Duration.ZERO, initkv);
 
         KeyValue endkv = new KeyValue(textFlow.translateXProperty(), -1.0 * textWidth);
-        KeyFrame endkf = new KeyFrame(Duration.seconds(textWidth / 180), endkv);
+        KeyFrame endkf = new KeyFrame(Duration.seconds(parameters.length() * 0.18), endkv);
 
         Timeline timeline = new Timeline(initkf, endkf);
         timeline.setCycleCount(Timeline.INDEFINITE);
